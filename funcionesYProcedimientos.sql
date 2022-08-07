@@ -1,24 +1,29 @@
 USE bdtutoria;
 
-DELIMITER $$
+DROP PROCEDURE IF EXISTS NoTutorados2022;
+DROP PROCEDURE IF EXISTS DistribucionParcial2022;
+DROP PROCEDURE IF EXISTS ConteoTutoradosxDocente;
+DROP PROCEDURE IF EXISTS NuevosMatriculados;
+
+DELIMITER //
 CREATE PROCEDURE NuevosMatriculados(semestre varchar(6))
 BEGIN
 DROP TEMPORARY TABLE IF EXISTS tablaNuevosMatriculados;
-CREATE TEMPORARY TABLE nuevosMatriculados
+CREATE TEMPORARY TABLE tablaNuevosMatriculados
 AS
-SELECT a.codAlumno, a.nombreApellido, nuevo.tipo FROM
+SELECT a.codAlumno, a.nombreApellido FROM
 (SELECT * FROM alumno) as a
 INNER JOIN
 (SELECT * FROM alumnomatriculado WHERE codigoSemestre = semestre and tipo = 'Nuevo') nuevo
 ON a.codAlumno = nuevo.codAlumno;
-END $$
+END //
 DELIMITER ;
 
 DELIMITER //
-CREATE PROCEDURE NoAptosTutoria2022()
+CREATE PROCEDURE NoTutorados2022()
 BEGIN
-DROP TEMPORARY TABLE noAptosTutoria;
-CREATE TEMPORARY TABLE tablaNoAptosTutoria
+DROP TEMPORARY TABLE IF EXISTS tablaNoTutorados;
+CREATE TEMPORARY TABLE tablaNoTutorados
 AS
 SELECT a.codAlumno, a.nombreApellido FROM
 (SELECT * FROM alumno) as a
@@ -34,14 +39,27 @@ END //
 DELIMITER ;
 
 DELIMITER //
-CREATE PROCEDURE DistribucionTutoria2021()
+CREATE PROCEDURE DistribucionParcial2022()
 BEGIN
-DROP TEMPORARY TABLE tablaDistribucionTutoria2021;
-CREATE TEMPORARY TABLE distribucionTutoria2021
+CALL notutorados2022();
+DROP TEMPORARY TABLE IF EXISTS tablaDistribucionParcial2022;
+CREATE TEMPORARY TABLE tablaDistribucionParcial2022
 AS
-SELECT codDocente, count(idTutoria) as NumeroTutorados
+SELECT codAlumno, codDocente
 FROM tutoria
-WHERE codigoSemestre = '2021-2'
+WHERE codigoSemestre = '2021-2' and codAlumno not in (SELECT codAlumno from tablanotutorados);
+END //
+DELIMITER ;
+
+DELIMITER //
+CREATE PROCEDURE ConteoTutoradosxDocente()
+BEGIN
+CALL DistribucionParcial2022();
+DROP TABLE IF EXISTS tutoradoxdocente2022;
+CREATE TEMPORARY TABLE tutoradoxdocente2022
+AS
+SELECT codDocente, count(codAlumno) as NumeroTutorados2022
+FROM tablaDistribucionParcial2022
 GROUP BY codDocente;
 END //
 DELIMITER ;
