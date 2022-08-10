@@ -17,4 +17,6 @@ InsertarAlumnos2022($archivoAlumnos2022);
 # -- Procesar CSV de los docentes contratados en 2022
 $archivoDocentes2022 = $_FILES['Docentes']['tmp_name'];
 InsertarDocentes2022($archivoDocentes2022);
+
+header('Location: index.php');
 ?>

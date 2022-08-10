@@ -3,9 +3,9 @@
 <head>
 	<meta charset="utf-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1">
-	<title></title>
+	<title>Tutorias</title>
 	<link rel="stylesheet" type="text/css" href="estilo1.css">
-	<script> 
+	<script>
 		function confirmarRegistro()
 		{
 			return confirm("\u00BFEst\u00E1 seguro que desea registrar datos?");
@@ -24,19 +24,19 @@
 					<p class="file-input__p" for="file-input">
 						<span> ALUMNOS</span>
 		            </p>
-					<input  class="file" type="file" name="Alumnos" id="file-input" class="file-input__input" accept=".csv"/>
+					<input  class="file" type="file" name="Alumnos" id="file-input" class="file-input__input" required accept=".csv"/>
 				</div>
 				<div>
 					<p class="file-input__p" for="file-input">
 						<span> DOCENTES</span>
 		            </p>
-					<input  class="file" type="file" name="Docentes" id="file-input" class="file-input__input" accept=".csv"/>
+					<input  class="file" type="file" name="Docentes" id="file-input" class="file-input__input" required accept=".csv"/>
 				</div>
 				<div>
 					<p class="file-input__p" for="file-input">
 						<span> TUTORÍAS ANTERIORES</span>
 		            </p>
-					<input  class="file" type="file" name="Tutorias" id="file-input" class="file-input__input" accept=".csv"/>
+					<input  class="file" type="file" name="Tutorias" id="file-input" class="file-input__input" required accept=".csv"/>
 				</div>
 				<div class="button">
 					<input type="submit" name="subir" class="btn" value="SUBIR" onclick="return confirmarRegistro()" />
@@ -45,10 +45,10 @@
 			<img class="img" src="imagen.jpg"><br>
 		</div>
 		<div class="sub2">
-			<form>
+			<form action="mostrarDatos.php" method="GET">
 				<p>SELECCIONE OPCIÓN:</p>
 				<select class="list" name="opciones" id="opcion" title="Seleccione opción">
-					<option>LISTA DE ALUMNOS QUE YA NO SON CONSIDERADOS EN LA TUTORÍA </option>
+					<option>LISTA DE ALUMNOS QUE YA NO SON CONSIDERADOS EN LA TUTORÍA</option>
 					<option>DISTRIBUCIÓN BALANCEADA DE TUTORÍAS PARA EL PRESENTE SEMESTRE</option>
 				</select>
 				<input class ="btn" type="submit" name="subir" class="btn-mostrar" value="MOSTRAR"/>

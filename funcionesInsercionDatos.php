@@ -27,14 +27,14 @@ function InsertarAlumnos2022($archivoTmpCsv){
   # abrir el archivo
   $registros = file($archivoTmpCsv);
 
-  for ($i = 0; $i < count($registros); $i++){
+  for ($i = 1; $i < count($registros); $i++){
     # verificar que no exista en la base de datos
     $datos_alumno = explode(',', $registros[$i]);
     $codAlumno = $datos_alumno[1];
     $nombres = $datos_alumno[2];
     if (!existe($codAlumno, 'alumno', 'codAlumno', $con)){
       # Agregar en la tabla 'alumno' y 'matricula'
-      Insertar($at_alumno, [$codAlumno, $nombres], 'alumno', $con);
+      Insertar($at_alumno, [$codAlumno, trim($nombres)], 'alumno', $con);
       Insertar($at_alumnoMatriculado, [$codAlumno, '2022-1', 'Nuevo'], 'alumnoMatriculado', $con);
     }
     else{
@@ -60,12 +60,40 @@ function InsertarDocentes2022($archivoTmpCsv){
     $codDocente = existeNombreDocente($nombres);
     if ($codDocente == -1){
       $numeroDocentes++;
-      Insertar($at_docente, [$numeroDocentes, $nombres], 'docente', $con);
+      Insertar($at_docente, [$numeroDocentes, trim($nombres)], 'docente', $con);
       Insertar($at_docenteContratado, [$numeroDocentes, '2022-1'], 'docenteContratado', $con);
     }
     else{
       Insertar($at_docenteContratado, [$codDocente, '2022-1'], 'docenteContratado', $con);
     }
+  }
+}
+
+function AgregarTutorias2022($registrosBalanceados){
+  global $con;
+  global $at_tutoria;
+  # Recuperar la tabla distribucionparcial2022
+  $proc = "CALL distribucionparcial2022();";
+  $consulta = "SELECT * FROM tablaDistribucionParcial2022";
+  mysqli_query($con, $proc);
+  $distribucionParcial = mysqli_query($con, $consulta);
+  #$consulta2 = "SELECT MAX(idTutoria) AS id FROM tutoria";
+  #$tutorias = mysqli_query($con, $consulta2);
+  #$filasTutoria += 2;
+  $filasTutoria = 701;
+  while (list($codAlumno, $codDocente) = mysqli_fetch_array($distribucionParcial, PDO::FETCH_NUM)){
+    //echo "Codigo  " . "Nombres<br>";
+    #echo "Una vez" . "<br>";
+    Insertar($at_tutoria, [$filasTutoria, $codAlumno, '2022-1', $codDocente], 'tutoria', $con);
+    $filasTutoria++;
+  }
+  # agregar los nuevos alumnos
+  # 0 : coddocente
+  # 1 : codalumno
+  # 2 : nombrealumno ??
+  for ($i = 0; $i < count($registrosBalanceados); $i++){
+    Insertar($at_tutoria, [$filasTutoria, $registrosBalanceados[$i][1], '2022-1', $registrosBalanceados[$i][0]], 'tutoria', $con);
+    $filasTutoria++;
   }
 }
 
@@ -103,7 +131,8 @@ function InsertarDistribucionDocentes2021($archivoTmpCsv){
     if (count($datos) > 1){
       $codigo = $datos[0];
       $nombre = $datos[1];
-      if (str_contains($codigo, "Docente") && (strlen($nombre) > 2)){
+      $nombre = trim($nombre);
+      if (str_contains($codigo, "Docente") && !empty($nombre)){
         $numeroDocentes++;
         # -- Insertar en tabla docente
         Insertar($at_docente, [$numeroDocentes, trim($nombre)], 'docente', $con);
@@ -116,13 +145,14 @@ function InsertarDistribucionDocentes2021($archivoTmpCsv){
           $datosAlumno = explode(',', $registros[$j]);
           $codAlumno = $datosAlumno[0];
           $nombreAlumno = $datosAlumno[1];
+          $nombreAlumno = trim($nombreAlumno);
           if (str_contains($codAlumno, "Docente")){
             $i = $j;
             break;
           }
           else{
             # insertar alumnos, matricula y tutoria
-            if (!str_contains($codAlumno, "CODIGO")){
+            if (!str_contains($codAlumno, "CODIGO") && !empty($nombreAlumno)){
               # -- incrementar numero de alumnos matriculados
               $numeroTutorias++;
               # -- Insertar en la tabla alumno
