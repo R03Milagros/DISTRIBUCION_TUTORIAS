@@ -73,34 +73,6 @@ function InsertarDocentes2022($archivoTmpCsv){
   }
 }
 
-function AgregarTutorias2022($registrosBalanceados){
-  global $con;
-  global $at_tutoria;
-  # Recuperar la tabla distribucionparcial2022
-  $proc = "CALL distribucionparcial2022();";
-  $consulta = "SELECT * FROM tablaDistribucionParcial2022";
-  mysqli_query($con, $proc);
-  $distribucionParcial = mysqli_query($con, $consulta);
-  #$consulta2 = "SELECT MAX(idTutoria) AS id FROM tutoria";
-  #$tutorias = mysqli_query($con, $consulta2);
-  #$filasTutoria += 2;
-  $filasTutoria = 701;
-  while (list($codAlumno, $codDocente) = mysqli_fetch_array($distribucionParcial, PDO::FETCH_NUM)){
-    //echo "Codigo  " . "Nombres<br>";
-    #echo "Una vez" . "<br>";
-    Insertar($at_tutoria, [$filasTutoria, $codAlumno, '2022-1', $codDocente], 'tutoria', $con);
-    $filasTutoria++;
-  }
-  # agregar los nuevos alumnos
-  # 0 : coddocente
-  # 1 : codalumno
-  # 2 : nombrealumno ??
-  for ($i = 0; $i < count($registrosBalanceados); $i++){
-    Insertar($at_tutoria, [$filasTutoria, $registrosBalanceados[$i][1], '2022-1', $registrosBalanceados[$i][0]], 'tutoria', $con);
-    $filasTutoria++;
-  }
-}
-
 function existeNombreDocente($nombre){
   global $con;
   $consulta = "SELECT * FROM docente";
