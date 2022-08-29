@@ -31,19 +31,15 @@ function InsertarAlumnos2022($archivoTmpCsv){
     # verificar que no exista en la base de datos
     $datos_alumno = explode(',', $registros[$i]);
     $codAlumno = $datos_alumno[1];
-    $codAlumno = trim($codAlumno);
     $nombres = $datos_alumno[2];
-    $nombres = trim($nombres);
     if (!existe($codAlumno, 'alumno', 'codAlumno', $con)){
       # Agregar en la tabla 'alumno' y 'matricula'
-      Insertar($at_alumno, [$codAlumno, $nombres], 'alumno', $con);
+      Insertar($at_alumno, [$codAlumno, trim($nombres)], 'alumno', $con);
       Insertar($at_alumnoMatriculado, [$codAlumno, '2022-1', 'Nuevo'], 'alumnoMatriculado', $con);
     }
     else{
-      if (!str_starts_with($codAlumno, '22')){
-        # el alumno ya existe, agregar solo a matricula
-        Insertar($at_alumnoMatriculado, [$codAlumno, '2022-1', 'Regular'], 'alumnoMatriculado', $con);
-      }
+      # el alumno ya existe, agregar solo a matricula
+      Insertar($at_alumnoMatriculado, [$codAlumno, '2022-1', 'Regular'], 'alumnoMatriculado', $con);
     }
   }
 }
@@ -106,13 +102,12 @@ function InsertarDistribucionDocentes2021($archivoTmpCsv){
     $datos = explode(',', $registros[$i]);
     if (count($datos) > 1){
       $codigo = $datos[0];
-      $codigo = trim($codigo);
       $nombre = $datos[1];
       $nombre = trim($nombre);
       if (str_contains($codigo, "Docente") && !empty($nombre)){
         $numeroDocentes++;
         # -- Insertar en tabla docente
-        Insertar($at_docente, [$numeroDocentes, $nombre], 'docente', $con);
+        Insertar($at_docente, [$numeroDocentes, trim($nombre)], 'docente', $con);
         # -- Insertar en la tabla docenteContratado
         Insertar($at_docenteContratado, [$numeroDocentes, '2021-2'], 'docenteContratado', $con);
 
@@ -121,7 +116,6 @@ function InsertarDistribucionDocentes2021($archivoTmpCsv){
         while ($j < $longitud){
           $datosAlumno = explode(',', $registros[$j]);
           $codAlumno = $datosAlumno[0];
-          $codAlumno = trim($codAlumno);
           $nombreAlumno = $datosAlumno[1];
           $nombreAlumno = trim($nombreAlumno);
           if (str_contains($codAlumno, "Docente")){
@@ -135,17 +129,12 @@ function InsertarDistribucionDocentes2021($archivoTmpCsv){
               $numeroTutorias++;
               # -- Insertar en la tabla alumno
               if (!existe($codAlumno, 'alumno', 'codAlumno', $con)){
-                if (str_starts_with($codAlumno, '22')){
-                  Insertar($at_alumno, [$codAlumno, $nombreAlumno], 'alumno', $con);
-                  Insertar($at_alumnoMatriculado, [$codAlumno, '2022-1', 'Nuevo'], 'alumnoMatriculado', $con);
-                } else{
-                  # -- Insertar en la tabla alumno
-                  Insertar($at_alumno, [$codAlumno, $nombreAlumno], 'alumno', $con);
-                  # -- Insertar en la tabla alumnoMatricuado
-                  Insertar($at_alumnoMatriculado, [$codAlumno, '2021-2', 'Nuevo'], 'alumnoMatriculado', $con);
-                  # -- Insertar en la tabla tutoria
-                  Insertar($at_tutoria, [$numeroTutorias, $codAlumno, '2021-2', $numeroDocentes], 'tutoria', $con);
-                }
+                # -- Insertar en la tabla alumno
+                Insertar($at_alumno, [$codAlumno, trim($nombreAlumno)], 'alumno', $con);
+                # -- Insertar en la tabla alumnoMatricuado
+                Insertar($at_alumnoMatriculado, [$codAlumno, '2021-2', 'Nuevo'], 'alumnoMatriculado', $con);
+                # -- Insertar en la tabla tutoria
+                Insertar($at_tutoria, [$numeroTutorias, $codAlumno, '2021-2', $numeroDocentes], 'tutoria', $con);
               }
             }
             $j++;
