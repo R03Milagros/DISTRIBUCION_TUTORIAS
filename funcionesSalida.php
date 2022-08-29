@@ -1,4 +1,5 @@
 <?php
+
 # funcion anonima que convierte un arreglo asociativo
 # a numerico
 $asocANumerico = function($arregloAsoc){

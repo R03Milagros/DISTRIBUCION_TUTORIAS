@@ -1,6 +1,7 @@
 <?php
 require('servicios.php');
 $opcion = $_GET['opcion'];
+
 # procesar segun la opcion
 switch ($opcion){
   case '0':
