@@ -68,6 +68,5 @@ insertarAlumnos2022($listaDatos);
 $listaDatos = prepararDatos($_FILES['Docentes']['tmp_name'], 1, 2);
 # insertar relacion de docentes 2022-1 en la base de datos
 insertarDocentes2022($listaDatos);
-
 header('Location: index.php');
 ?>

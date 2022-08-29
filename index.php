@@ -15,7 +15,7 @@
 </head>
 <body>
 	<header>
-		<h1><center>TUTORÍAS</center></h1>
+		<h1><center> TUTORÍAS </center></h1>
 	</header>
 	<div class="contenido">
 		<div class="sub1">

@@ -1,4 +1,5 @@
 <?php
+
 require('conexion.php');
 require('funcionesSalida.php');
 

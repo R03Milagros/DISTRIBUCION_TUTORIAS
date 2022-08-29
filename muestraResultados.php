@@ -4,7 +4,7 @@
 	<meta charset="utf-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1">
 	<title>Tutorias</title>
-	<link rel="stylesheet" type="text/css" href="estilo_1.css">
+	<link rel="stylesheet" type="text/css" href="estilo1.css">
 	<link rel="stylesheet" type="text/css" href="estilosTabla.css">
 	<script>
 		function confirmarRegistro()
@@ -45,7 +45,7 @@ if (isset($_GET['opciones'])){
 <html>
   <head>
     <title>Resultados</title>
-    <link rel="stylesheet" type="text/css" href="estilos_1.css">
+    <link rel="stylesheet" type="text/css" href="estilos1.css">
   </head>
   <body>
   <div id="table-wrapper">
